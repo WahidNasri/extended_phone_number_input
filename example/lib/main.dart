@@ -69,8 +69,10 @@ class _MyHomePageState extends State<MyHomePage> {
               const Text('custom border & custom controller'),
               PhoneNumberInput(
                 initialCountry: 'TN',
-                locale: 'it',
-                controller: PhoneNumberInputController(context, locale: 'ar'),
+                locale: 'ar',
+                controller: PhoneNumberInputController(
+                  context,
+                ),
                 countryListMode: CountryListMode.dialog,
                 contactsPickerPosition: ContactsPickerPosition.suffix,
                 enabledBorder: OutlineInputBorder(
