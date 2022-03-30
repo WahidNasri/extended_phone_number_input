@@ -1,3 +1,4 @@
+import 'package:extended_phone_number_input/consts/enums.dart';
 import 'package:extended_phone_number_input/consts/strings_consts.dart';
 import 'package:extended_phone_number_input/widgets/country_code_list.dart';
 import 'package:extended_phone_number_input/models/country.dart';
@@ -20,23 +21,25 @@ class PhoneNumberInput extends StatefulWidget {
   final String locale;
   final String? searchHint;
   final bool allowSearch;
-  const PhoneNumberInput(
-      {Key? key,
-      this.phoneNumberInputController,
-      this.onChanged,
-      this.initialValue,
-      this.initialCountry,
-      this.excludedCountries,
-      this.allowPickFromContacts = true,
-      this.pickContactIcon,
-      this.includedCountries,
-      this.hint,
-      this.showSelectedFlag = true,
-      this.border,
-      this.locale = 'en',
-      this.searchHint,
-      this.allowSearch = true})
-      : super(key: key);
+  final CountryListMode countryListMode;
+  const PhoneNumberInput({
+    Key? key,
+    this.phoneNumberInputController,
+    this.onChanged,
+    this.initialValue,
+    this.initialCountry,
+    this.excludedCountries,
+    this.allowPickFromContacts = true,
+    this.pickContactIcon,
+    this.includedCountries,
+    this.hint,
+    this.showSelectedFlag = true,
+    this.border,
+    this.locale = 'en',
+    this.searchHint,
+    this.allowSearch = true,
+    this.countryListMode = CountryListMode.bottomSheet,
+  }) : super(key: key);
 
   @override
   _CountryCodePickerState createState() => _CountryCodePickerState();
@@ -129,20 +132,7 @@ class _CountryCodePickerState extends State<PhoneNumberInput> {
                             )),
                   ),
                   prefixIcon: InkWell(
-                    onTap: () {
-                      showModalBottomSheet(
-                          isScrollControlled: true,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          enableDrag: true,
-                          context: context,
-                          builder: (_) => CountryCodeList(
-                              searchHint: widget.searchHint,
-                              allowSearch: widget.allowSearch,
-                              phoneNumberInputController:
-                                  _phoneNumberInputController));
-                    },
+                    onTap: _openCountryList,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -169,6 +159,9 @@ class _CountryCodePickerState extends State<PhoneNumberInput> {
                           width: 1,
                           color: const Color(0xFFB9BFC5),
                         ),
+                        const SizedBox(
+                          width: 8,
+                        ),
                       ],
                     ),
                   ),
@@ -177,5 +170,40 @@ class _CountryCodePickerState extends State<PhoneNumberInput> {
             ),
           );
         });
+  }
+
+  void _openCountryList() {
+    switch (widget.countryListMode) {
+      case CountryListMode.bottomSheet:
+        showModalBottomSheet(
+            isScrollControlled: true,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            enableDrag: true,
+            context: context,
+            builder: (_) => SizedBox(
+                  height: 500,
+                  child: CountryCodeList(
+                      searchHint: widget.searchHint,
+                      allowSearch: widget.allowSearch,
+                      phoneNumberInputController: _phoneNumberInputController),
+                ));
+        break;
+      case CountryListMode.dialog:
+        showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+                  content: SizedBox(
+                    width: double.maxFinite,
+                    child: CountryCodeList(
+                        searchHint: widget.searchHint,
+                        allowSearch: widget.allowSearch,
+                        phoneNumberInputController:
+                            _phoneNumberInputController),
+                  ),
+                ));
+        break;
+    }
   }
 }
