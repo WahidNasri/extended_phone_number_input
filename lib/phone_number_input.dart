@@ -231,6 +231,7 @@ class _CountryCodePickerState extends State<PhoneNumberInput> {
         showDialog(
             context: context,
             builder: (_) => AlertDialog(
+                  contentPadding: EdgeInsets.zero,
                   content: SizedBox(
                     width: double.maxFinite,
                     child: CountryCodeList(

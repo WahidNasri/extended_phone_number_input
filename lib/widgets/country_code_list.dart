@@ -49,14 +49,15 @@ class _CountryCodeListState extends State<CountryCodeList> {
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: IconButton(
-                onPressed: () {
+          Padding(
+            padding: const EdgeInsetsDirectional.only(start: 8, top: 10),
+            child: InkWell(
+                onTap: () {
                   Navigator.pop(context);
                 },
-                icon: const Icon(Icons.close)),
+                child: const Icon(Icons.close)),
           ),
           if (widget.allowSearch)
             Padding(
