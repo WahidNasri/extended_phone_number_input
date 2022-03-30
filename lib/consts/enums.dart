@@ -1,0 +1,1 @@
+enum CountryListMode { bottomSheet, dialog }
