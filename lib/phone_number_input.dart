@@ -62,8 +62,9 @@ class _CountryCodePickerState extends State<PhoneNumberInput> {
   @override
   void initState() {
     if (widget.controller == null) {
-      _phoneNumberInputController =
-          PhoneNumberInputController(context, locale: widget.locale);
+      _phoneNumberInputController = PhoneNumberInputController(
+        context,
+      );
     } else {
       _phoneNumberInputController = widget.controller!;
     }
@@ -75,12 +76,12 @@ class _CountryCodePickerState extends State<PhoneNumberInput> {
 
   Future _init() async {
     await _phoneNumberInputController.init(
-      initialCountryCode: widget.initialCountry,
-      excludeCountries: widget.excludedCountries,
-      includeCountries: widget.includedCountries,
-      initialPhoneNumber: widget.initialValue,
-      errorText: widget.errorText,
-    );
+        initialCountryCode: widget.initialCountry,
+        excludeCountries: widget.excludedCountries,
+        includeCountries: widget.includedCountries,
+        initialPhoneNumber: widget.initialValue,
+        errorText: widget.errorText,
+        locale: widget.locale);
   }
 
   void _refresh() {

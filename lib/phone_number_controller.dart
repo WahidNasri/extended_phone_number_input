@@ -11,12 +11,9 @@ import 'models/countries_list.dart';
 class PhoneNumberInputController extends ChangeNotifier {
   final BuildContext _context;
 
-  final String? locale;
-
   PhoneNumberInputController(
-    this._context, {
-    this.locale,
-  });
+    this._context,
+  );
 
   late List<Country> _countries;
   late List<Country> _visibleCountries;
@@ -46,6 +43,7 @@ class PhoneNumberInputController extends ChangeNotifier {
       List<String>? excludeCountries,
       List<String>? includeCountries,
       String? initialPhoneNumber,
+      String? locale,
       String? errorText}) async {
     _countries = await loadCountries(_context, locale: locale);
     _visibleCountries = _countries;
