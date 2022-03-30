@@ -1,39 +1,77 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+A Highly customizable Phone input Flutter widget that supports country code, validation and contact picker.
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+<p float="center">
+  <img src="./example/screenshots/01.gif" width="30%" />
+  <img src="./example/screenshots/02.gif" width="30%" /> 
+  <img src="./example/screenshots/03.gif" width="30%" />
+</p>
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- Phone number with international validation
+- Include only specific countries
+- Exclude specific countries
+- Set a phone number using a controller (Selected country will be updated automatically)
+- Pick a phone number from contacts list
 
 ## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Install the package `extended-phone-number-input`:
+```
+flutter pub add extended-phone-number-input
+```
+If you target Android 11+ (API 30+) and want to use the build-in contact picker you need to add the `android.permission.READ_CONTACTS` permission on the AndroidManifest.xml as this permission will be requested automatically.
 
 ## Usage
+A full and rich example can be found in [`/example`](example/) folder.
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
 
+### Simple usage
 ```dart
-const like = 'sample';
+ PhoneNumberInput(initialCountry: 'SA', locale: 'ar')
 ```
 
-## Additional information
+### Show countries as dialog (default is bottom sheet)
+```dart
+ const PhoneNumberInput(
+    initialCountry: 'US',
+    locale: 'en',
+    countryListMode: CountryListMode.dialog,
+    contactsPickerPosition: ContactsPickerPosition.suffix,
+    )
+```
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+### Custom borders
+```dart
+ PhoneNumberInput(
+    initialCountry: 'TN',
+    locale: 'fr',
+    countryListMode: CountryListMode.dialog,
+    contactsPickerPosition: ContactsPickerPosition.suffix,
+    enabledBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10),
+    borderSide: const BorderSide(color: Colors.purple)),
+    focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: Colors.purple))
+    )
+```
+
+### Select Phone number programmatically
+To be able to select a phone number programmatically, we first need to define a `PhoneInputController` :
+
+```dart
+PhoneInputController _controller = PhoneInputController(context);
+```
+```dart
+ PhoneNumberInput(
+     controller: _controller
+    ...
+```
+
+Select the desired phone number:
+```dart
+_controller.phoneNumber = '+1-....'
+```
+
+#### Note: 
+If you want to set the phone number from contact, The widget already support this feature without the need to use the controller.
