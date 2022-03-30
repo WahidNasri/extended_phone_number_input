@@ -23,9 +23,7 @@ class PhoneNumberInputController extends ChangeNotifier {
       this.excludeCountries,
       this.initialPhoneNumber,
       this.onUnsupportedCountrySelected,
-      this.locale}) {
-    _init();
-  }
+      this.locale});
 
   late List<Country> _countries;
   late List<Country> _visibleCountries;
@@ -40,7 +38,11 @@ class PhoneNumberInputController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future _init() async {
+  Future init(
+      {String? initialCountryCode,
+      List<String>? excludeCountries,
+      List<String>? includeCountries,
+      String? initialPhoneNumber}) async {
     _countries = await loadCountries(_context, locale: locale);
     _visibleCountries = _countries;
     _selectedCountry = _countries.first;
