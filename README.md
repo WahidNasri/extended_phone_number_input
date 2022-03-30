@@ -1,9 +1,9 @@
 A Highly customizable Phone input Flutter widget that supports country code, validation and contact picker.
 
 <p float="center">
-  <img src="./example/screenshots/01.gif" width="30%" />
-  <img src="./example/screenshots/02.gif" width="30%" /> 
-  <img src="./example/screenshots/03.gif" width="30%" />
+  <img src="https://github.com/WahidNasri/extended_phone_number_input/blob/master/example/screenshots/01.gif" width="30%" />
+  <img src="https://github.com/WahidNasri/extended_phone_number_input/blob/master/example/screenshots/02.gif" width="30%" /> 
+  <img src="https://github.com/WahidNasri/extended_phone_number_input/blob/master/example/screenshots/03.gif" width="30%" />
 </p>
 
 ## Features
@@ -15,9 +15,9 @@ A Highly customizable Phone input Flutter widget that supports country code, val
 - Pick a phone number from contacts list
 
 ## Getting started
-Install the package `extended-phone-number-input`:
+Install the package `extended_phone_number_input`:
 ```
-flutter pub add extended-phone-number-input
+flutter pub add extended_phone_number_input
 ```
 If you target Android 11+ (API 30+) and want to use the build-in contact picker you need to add the `android.permission.READ_CONTACTS` permission on the AndroidManifest.xml as this permission will be requested automatically.
 

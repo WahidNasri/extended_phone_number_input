@@ -8,8 +8,10 @@ Future<List<Country>> loadCountries(BuildContext context,
     {String? locale}) async {
   final supportedLocales = await _loadSupportedLocales(context);
 
-  final actualLocale = locale != null &&
-      supportedLocales.contains(locale.toLowerCase()) ? locale : 'en';
+  final actualLocale =
+      locale != null && supportedLocales.contains(locale.toLowerCase())
+          ? locale
+          : 'en';
 
   final countries = await _getCountries(actualLocale);
   return countries.map((map) => Country.fromMap(map)).toList();
@@ -28,13 +30,14 @@ Future<List<Map<String, dynamic>>> _getCountries(String locale) async {
       c['name'] = names[c['code']] ?? c['name'] ?? '';
     }
     return data;
-  }catch(ex){
+  } catch (ex) {
     return List.empty();
   }
 }
 
 Future<Map<String, dynamic>> _getCountriesNames(String locale) async {
-  final content = await rootBundle.loadString('packages/extended_phone_number_input/assets/names/$locale.json');
+  final content = await rootBundle.loadString(
+      'packages/extended_phone_number_input/assets/names/$locale.json');
 
   final list = json.decode(content) as Map<String, dynamic>;
   return list;

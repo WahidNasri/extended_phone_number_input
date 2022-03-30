@@ -1,4 +1,4 @@
-class Country{
+class Country {
   final String name;
   final String code;
   final String dialCode;
@@ -17,6 +17,6 @@ class Country{
         code: map['code'].toString(),
         dialCode: map['dial_code'].toString(),
         flagPath:
-        'packages/extended_phone_number_input/assets/flags/${map['code']?.toLowerCase()}.png');
+            'packages/extended_phone_number_input/assets/flags/${map['code']?.toLowerCase()}.png');
   }
 }
