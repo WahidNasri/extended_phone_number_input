@@ -1,4 +1,5 @@
 import 'package:extended_phone_number_input/consts/enums.dart';
+import 'package:extended_phone_number_input/phone_number_controller.dart';
 import 'package:extended_phone_number_input/phone_number_input.dart';
 import 'package:flutter/material.dart';
 
@@ -65,10 +66,11 @@ class _MyHomePageState extends State<MyHomePage> {
               const SizedBox(
                 height: 50,
               ),
-              const Text('custom border'),
+              const Text('custom border & custom controller'),
               PhoneNumberInput(
                 initialCountry: 'TN',
                 locale: 'it',
+                controller: PhoneNumberInputController(context, locale: 'ar'),
                 countryListMode: CountryListMode.dialog,
                 contactsPickerPosition: ContactsPickerPosition.suffix,
                 enabledBorder: OutlineInputBorder(
@@ -77,6 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: const BorderSide(color: Colors.purple)),
+                errorText: 'error',
               ),
               const SizedBox(
                 height: 50,

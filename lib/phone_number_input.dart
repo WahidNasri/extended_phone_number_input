@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class PhoneNumberInput extends StatefulWidget {
-  final PhoneNumberInputController? phoneNumberInputController;
+  final PhoneNumberInputController? controller;
   final String? initialValue;
   final String? initialCountry;
   final List<String>? excludedCountries;
@@ -25,9 +25,10 @@ class PhoneNumberInput extends StatefulWidget {
   final InputBorder? enabledBorder;
   final InputBorder? focusedBorder;
   final ContactsPickerPosition contactsPickerPosition;
+  final String? errorText;
   const PhoneNumberInput({
     Key? key,
-    this.phoneNumberInputController,
+    this.controller,
     this.onChanged,
     this.initialValue,
     this.initialCountry,
@@ -45,6 +46,7 @@ class PhoneNumberInput extends StatefulWidget {
     this.enabledBorder,
     this.focusedBorder,
     this.contactsPickerPosition = ContactsPickerPosition.suffix,
+    this.errorText,
   }) : super(key: key);
 
   @override
@@ -59,11 +61,11 @@ class _CountryCodePickerState extends State<PhoneNumberInput> {
 
   @override
   void initState() {
-    if (widget.phoneNumberInputController == null) {
+    if (widget.controller == null) {
       _phoneNumberInputController =
           PhoneNumberInputController(context, locale: widget.locale);
     } else {
-      _phoneNumberInputController = widget.phoneNumberInputController!;
+      _phoneNumberInputController = widget.controller!;
     }
     _initFuture = _init();
     _phoneNumberInputController.addListener(_refresh);
@@ -73,10 +75,12 @@ class _CountryCodePickerState extends State<PhoneNumberInput> {
 
   Future _init() async {
     await _phoneNumberInputController.init(
-        initialCountryCode: widget.initialCountry,
-        excludeCountries: widget.excludedCountries,
-        includeCountries: widget.includedCountries,
-        initialPhoneNumber: widget.initialValue);
+      initialCountryCode: widget.initialCountry,
+      excludeCountries: widget.excludedCountries,
+      includeCountries: widget.includedCountries,
+      initialPhoneNumber: widget.initialValue,
+      errorText: widget.errorText,
+    );
   }
 
   void _refresh() {
@@ -104,13 +108,13 @@ class _CountryCodePickerState extends State<PhoneNumberInput> {
     return FutureBuilder(
         future: _initFuture,
         builder: (context, snapshot) {
-          return Directionality(
-            textDirection: TextDirection.ltr,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: Column(
-                children: [
-                  TextFormField(
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            child: Column(
+              children: [
+                Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: TextFormField(
                     controller: _phoneNumberTextFieldController,
                     inputFormatters: [
                       LengthLimitingTextInputFormatter(15),
@@ -185,25 +189,24 @@ class _CountryCodePickerState extends State<PhoneNumberInput> {
                       ),
                     ),
                   ),
-                  Visibility(
-                      visible: widget.allowPickFromContacts &&
-                          widget.contactsPickerPosition ==
-                              ContactsPickerPosition.bottom,
-                      child: widget.pickContactIcon == null
-                          ? IconButton(
-                              onPressed:
-                                  _phoneNumberInputController.pickFromContacts,
-                              icon: Icon(
-                                Icons.contact_phone,
-                                color: Theme.of(context).primaryColor,
-                              ))
-                          : InkWell(
-                              onTap:
-                                  _phoneNumberInputController.pickFromContacts,
-                              child: widget.pickContactIcon,
-                            )),
-                ],
-              ),
+                ),
+                Visibility(
+                    visible: widget.allowPickFromContacts &&
+                        widget.contactsPickerPosition ==
+                            ContactsPickerPosition.bottom,
+                    child: widget.pickContactIcon == null
+                        ? IconButton(
+                            onPressed:
+                                _phoneNumberInputController.pickFromContacts,
+                            icon: Icon(
+                              Icons.contact_phone,
+                              color: Theme.of(context).primaryColor,
+                            ))
+                        : InkWell(
+                            onTap: _phoneNumberInputController.pickFromContacts,
+                            child: widget.pickContactIcon,
+                          )),
+              ],
             ),
           );
         });

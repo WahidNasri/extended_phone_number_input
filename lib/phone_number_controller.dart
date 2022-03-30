@@ -9,24 +9,23 @@ import 'package:phone_numbers_parser/phone_numbers_parser.dart' as parserNumber;
 import 'models/countries_list.dart';
 
 class PhoneNumberInputController extends ChangeNotifier {
-  final String? initialCountryCode;
-  final String? initialPhoneNumber;
-  final List<String>? includeCountries;
-  final List<String>? excludeCountries;
   final BuildContext _context;
-  final Function(String)? onUnsupportedCountrySelected;
+
   final String? locale;
 
-  PhoneNumberInputController(this._context,
-      {this.initialCountryCode,
-      this.includeCountries,
-      this.excludeCountries,
-      this.initialPhoneNumber,
-      this.onUnsupportedCountrySelected,
-      this.locale});
+  PhoneNumberInputController(
+    this._context, {
+    this.locale,
+  });
 
   late List<Country> _countries;
   late List<Country> _visibleCountries;
+  String? _errorText;
+  String? _initialCountryCode;
+  String? _initialPhoneNumber;
+  List<String>? _includeCountries;
+  List<String>? _excludeCountries;
+  Function(String)? _onUnsupportedCountrySelected;
 
   late Country _selectedCountry;
   String _phoneNumber = '';
@@ -38,19 +37,25 @@ class PhoneNumberInputController extends ChangeNotifier {
     notifyListeners();
   }
 
+  set errorText(String errorText) {
+    _errorText = errorText;
+  }
+
   Future init(
       {String? initialCountryCode,
       List<String>? excludeCountries,
       List<String>? includeCountries,
-      String? initialPhoneNumber}) async {
+      String? initialPhoneNumber,
+      String? errorText}) async {
     _countries = await loadCountries(_context, locale: locale);
     _visibleCountries = _countries;
     _selectedCountry = _countries.first;
-    selectValues(
-        initialCountryCode: initialCountryCode,
-        excludeCountries: excludeCountries,
-        includeCountries: includeCountries,
-        initialPhoneNumber: initialPhoneNumber);
+    _errorText = errorText;
+    _initialCountryCode = initialCountryCode;
+    _excludeCountries = excludeCountries;
+    _includeCountries = includeCountries;
+    _initialPhoneNumber = initialPhoneNumber;
+    _selectValues();
   }
 
   set selectedCountry(Country country) {
@@ -98,8 +103,8 @@ class PhoneNumberInputController extends ChangeNotifier {
     return getCountries.firstWhere(
         (country) => country.dialCode.replaceFirst('+', '') == dialCode,
         orElse: () {
-      if (onUnsupportedCountrySelected != null) {
-        onUnsupportedCountrySelected!(dialCode);
+      if (_onUnsupportedCountrySelected != null) {
+        _onUnsupportedCountrySelected!(dialCode);
       }
       return _selectedCountry;
     });
@@ -115,7 +120,7 @@ class PhoneNumberInputController extends ChangeNotifier {
   String? validator(String? phoneNumber) {
     if (phoneNumber == null || phoneNumber.isEmpty) {
       _isValid = false;
-      return 'الرجاء إدخال رقم الجوال';
+      return _errorText ?? 'الرجاء إدخال رقم الجوال';
     } else {
       try {
         final englishNumber = arabicNumberConverter(phoneNumber);
@@ -124,7 +129,7 @@ class PhoneNumberInputController extends ChangeNotifier {
         final isValid = phoneInfo.validate();
         _isValid = isValid;
         if (!isValid) {
-          return "الرجاء ادخال رقم جوال صحيح";
+          return _errorText ?? "الرجاء ادخال رقم جوال صحيح";
         }
         return null;
       } catch (e) {
@@ -138,38 +143,34 @@ class PhoneNumberInputController extends ChangeNotifier {
     return parserNumber.PhoneNumber.fromRaw(phoneNumber);
   }
 
-  void selectValues(
-      {String? initialCountryCode,
-      List<String>? excludeCountries,
-      List<String>? includeCountries,
-      String? initialPhoneNumber}) {
+  void _selectValues() {
     try {
-      if (initialCountryCode != null) {
+      if (_initialCountryCode != null) {
         _selectedCountry = getCountries.firstWhere(
-          (country) => country.code == initialCountryCode.toUpperCase(),
+          (country) => country.code == _initialCountryCode?.toUpperCase(),
         );
       } else {
         _selectedCountry = getCountries.first;
       }
-      if (initialPhoneNumber != null && initialPhoneNumber.isNotEmpty) {
-        phoneNumber = initialPhoneNumber;
+      if (_initialPhoneNumber != null && _initialPhoneNumber!.isNotEmpty) {
+        phoneNumber = _initialPhoneNumber!;
       }
-      if (excludeCountries != null && includeCountries != null) {
+      if (_excludeCountries != null && _includeCountries != null) {
         assert(false,
             'you can not use include & exclude at the same time.. choose one at most');
       }
-      if (includeCountries != null) {
+      if (_includeCountries != null) {
         _visibleCountries = [
           ..._countries
-              .where((country) => includeCountries
+              .where((country) => _includeCountries!
                   .map((e) => e.toUpperCase())
                   .contains(country.code))
               .toList()
         ];
-      } else if (excludeCountries != null) {
+      } else if (_excludeCountries != null) {
         _visibleCountries = [
           ..._countries
-              .where((country) => !excludeCountries
+              .where((country) => !_excludeCountries!
                   .map((e) => e.toUpperCase())
                   .contains(country.code))
               .toList()
